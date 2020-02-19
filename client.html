@@ -1,0 +1,50 @@
+<html>
+<head>
+    <script type="text/javascript">
+        var ws = null;
+
+        window.onload = function() {
+            document.querySelector("#open").onclick = function(){
+                ws = new WebSocket("ws://localhost:8000/ws");
+                ws.onopen = function(){
+                    alert("连接成功！")
+                }
+            };
+
+            document.querySelector("#close").onclick = function(){
+                ws.close();
+                alert("断开连接成功！")
+            };
+
+            document.querySelector("#sendMsg").onclick = function(){
+                let msg = document.querySelector("#msgContent").value;
+                if (msg === null || msg === "" || msg === undefined) {
+                    alert("发送内容不能为空！")
+                }
+
+                ws.send(msg);
+
+                // 获取返回的消息
+                ws.onmessage = function (evt) {
+                    document.querySelector("#textbox").textContent = evt.data;
+                };
+            };
+        }
+    </script>
+</head>
+<body>
+    <div>
+        <div><button id="open">连接ws服务器</button></div>
+        <div><button id="close">断开连接</button></div>
+        <div>
+            <input type="text" name="msg" value="" id="msgContent"/>
+            <button id="sendMsg">发送消息</button>
+        </div>
+
+        <div>
+            <label>接受的消息如下：</label>
+            <textarea id="textbox"></textarea>
+        </div>
+    </div>
+</body>
+</html>
